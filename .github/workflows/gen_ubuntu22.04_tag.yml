@@ -96,7 +96,7 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     needs: build
-    if: github.repository == 'wezterm/wezterm'
+    if: github.repository == 'henrylao/wezterm'
     permissions:
       contents: write
       pages: write
@@ -108,9 +108,6 @@ jobs:
         run: "git config --global --add safe.directory /__w/wezterm/wezterm"
       - name: "checkout repo"
         uses: actions/checkout@v5
-      - name: "Upload to gemfury"
-        env:
-          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
         shell: bash
         run: "for f in wezterm*.deb ; do curl -i -F package=@$f https://$FURY_TOKEN@push.fury.io/wez/ ; done"
       - name: "Download artifact"
@@ -128,5 +125,8 @@ jobs:
       - name: "Upload to Tagged Release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Upload to gemfury"
+        env:
+          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
         shell: bash
         run: "bash ci/retry.sh gh release upload --clobber $(ci/tag-name.sh) wezterm-*.deb wezterm-*.xz *.sha256"
