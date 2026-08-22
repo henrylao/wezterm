@@ -136,6 +136,11 @@ jobs:
       - name: "Checksum"
         shell: bash
         run: "for f in wezterm-*.rpm ; do sha256sum $f > $f.sha256 ; done"
+      - name: "Ensure Nightly Release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: "gh release view nightly > /dev/null 2>&1 || gh release create nightly --prerelease --notes 'Nightly build'"
       - name: "Upload to Nightly Release"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
